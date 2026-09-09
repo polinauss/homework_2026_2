@@ -26,4 +26,20 @@ QUnit.module('Тестируем функцию transform', () => {
 
         assert.deepEqual(result, { a: [3, 6, 9], b: 12 }, 'Элементы массива должны быть умножены на 3');
     });
+
+    QUnit.test('Работает правильно с глубокой вложенностью', (assert) => {
+        const originalObject = { a: { b: [1, { c: 2 }] }, d: 3 };
+        const transformFunction = (value) => value * 2;
+        const result = transform(originalObject, transformFunction);
+
+        assert.deepEqual(result, { a: { b: [2, { c: 4 }] }, d: 6 }, 'Значения должны преобразовываться на любой глубине');
+    });
+
+    QUnit.test('Работает правильно с null', (assert) => {
+        const originalObject = { a: null, b: 1 };
+        const transformFunction = (value) => String(value);
+        const result = transform(originalObject, transformFunction);
+
+        assert.deepEqual(result, { a: 'null', b: '1' }, 'null должен попадать в функцию преобразования');
+    });
 });

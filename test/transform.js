@@ -42,4 +42,22 @@ QUnit.module('Тестируем функцию transform', () => {
 
         assert.deepEqual(result, { a: 'null', b: '1' }, 'null должен попадать в функцию преобразования');
     });
+
+    QUnit.test('Выбрасывает ошибку, если obj не объект', (assert) => {
+        const transformFunction = (value) => value * 2;
+
+        assert.throws(() => transform(undefined, transformFunction), TypeError, 'undefined');
+        assert.throws(() => transform(null, transformFunction), TypeError, 'null');
+        assert.throws(() => transform('Полина', transformFunction), TypeError, 'строка');
+        assert.throws(() => transform(67, transformFunction), TypeError, 'число');
+    });
+
+    QUnit.test('Выбрасывает ошибку, если transformFn не функция', (assert) => {
+        const originalObject = { a: 1 };
+
+        assert.throws(() => transform(originalObject, undefined), TypeError, 'undefined');
+        assert.throws(() => transform(originalObject, null), TypeError, 'null');
+        assert.throws(() => transform(originalObject, 'Полина'), TypeError, 'строка');
+        assert.throws(() => transform(originalObject, 67), TypeError, 'число');
+    });
 });

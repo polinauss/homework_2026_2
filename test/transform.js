@@ -60,4 +60,14 @@ QUnit.module('Тестируем функцию transform', () => {
         assert.throws(() => transform(originalObject, 'Полина'), TypeError, 'строка');
         assert.throws(() => transform(originalObject, 67), TypeError, 'число');
     });
+
+    QUnit.test('Выбрасывает ошибку для специальных объектов', (assert) => {
+        const transformFunction = (value) => value * 2;
+
+        assert.throws(() => transform(new Date(), transformFunction), TypeError, 'Date');
+        assert.throws(() => transform(new Map(), transformFunction), TypeError, 'Map');
+        assert.throws(() => transform(new Set(), transformFunction), TypeError, 'Set');
+        assert.throws(() => transform(new String('Полина'), transformFunction), TypeError, 'String');
+        assert.throws(() => transform(new Number(67), transformFunction), TypeError, 'Number');
+    });
 });

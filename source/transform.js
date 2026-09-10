@@ -1,6 +1,16 @@
 'use strict';
 
 /**
+ * Функция, проверяющая, является ли значение обычным объектом или массивом
+ * @param {*} value - проверяемое значение
+ * @returns {Boolean}
+ */
+const isPlainObjectOrArray = (value) => {
+    const type = Object.prototype.toString.call(value);//узнать точный тип объекта 
+    return type === '[object Object]' || type === '[object Array]';
+};
+
+/**
  * Функция, применяющая преобразование ко всем значениям объекта
  * @param {Object} obj - объект для преобразования
  * @param {Function} transformFn - функция преобразования
@@ -12,7 +22,7 @@
  * @returns {Object}
  */
 const transform = (obj, transformFn) => {
-    if (typeof obj !== 'object' || obj === null) {
+    if (!isPlainObjectOrArray(obj)) {
         throw new TypeError('obj должен быть объектом');
     }
 
@@ -23,9 +33,11 @@ const transform = (obj, transformFn) => {
     const result = Array.isArray(obj) ? [] : {};
 
     for (const [key, value] of Object.entries(obj)) {
-        result[key] = typeof value === 'object' && value !== null
-            ? transform(value, transformFn)
-            : transformFn(value);
+        if (isPlainObjectOrArray(value)) {
+            result[key] = transform(value, transformFn);
+        } else {
+            result[key] = transformFn(value);
+        }
     }
 
     return result;
